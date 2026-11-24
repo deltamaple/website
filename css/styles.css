@@ -465,8 +465,22 @@ p { margin: 0; text-wrap: pretty; }
 .quote-form input:focus, .quote-form select:focus, .quote-form textarea:focus { border-color: var(--teal); background-color: #fff; outline: none; box-shadow: 0 0 0 4px rgba(14,90,92,.12); }
 .quote-form textarea { resize: vertical; min-height: 112px; }
 .quote-form .invalid { border-color: var(--red); background-color: #FFF7F6; }
-.form-note { font-size: .84rem; color: var(--muted); text-align: center; }
+.form-body { display: grid; gap: 16px; }
+.form-body[hidden] { display: none; }
+.form-note { font-size: .84rem; color: var(--muted); text-align: center; display: flex; gap: 6px; align-items: center; justify-content: center; }
+.form-note svg { width: 15px; height: 15px; flex-shrink: 0; fill: none; stroke: var(--teal); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; }
+.btn[aria-busy="true"] { opacity: .75; pointer-events: none; }
+.btn[aria-busy="true"] .arrow { display: none; }
+.btn[aria-busy="true"]::after { content: ""; width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255,255,255,.5); border-top-color: #fff; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.form-success { text-align: center; padding: 40px 8px; display: grid; gap: 14px; justify-items: center; }
+.form-success[hidden] { display: none; }
+.form-success svg { width: 56px; height: 56px; fill: none; stroke: var(--teal); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; background: var(--teal-050); border-radius: 50%; padding: 8px; }
+.form-success p { color: var(--muted); max-width: 26em; }
+.form-success .btn { margin-top: 8px; }
 .form-error { font-size: .9rem; color: var(--red); text-align: center; font-weight: 600; }
+.form-error a { color: inherit; }
 .form-done { display: flex; gap: 12px; align-items: flex-start; background: var(--teal-050); border-radius: 14px; padding: 14px 16px; font-size: .94rem; color: var(--ink); }
 .form-done[hidden] { display: none; }
 .form-done svg { width: 24px; height: 24px; flex-shrink: 0; fill: none; stroke: var(--teal); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }

@@ -94,10 +94,32 @@
     });
   });
 
-  // Quote form -> opens the visitor's email app, addressed to sales@.
-  // To use a form service later (e.g. Formspree, Netlify Forms), set an action on the <form> and remove this handler.
+  // Quote form -> sent by Web3Forms (https://web3forms.com) straight to sales@deltamaple.com.
+  // The access key only lets this form send TO the Delta Maple inbox, so it is safe to keep in the page.
+  // If the key is ever removed, the form falls back to opening the visitor's email app.
+  var FORM_KEY = window.DM_FORM_KEY || '';
   var err = document.getElementById('form-error');
+  var fail = document.getElementById('form-fail');
   var doneBox = document.getElementById('form-done');
+  var formBody = document.getElementById('form-body');
+  var submitBtn = document.getElementById('form-submit');
+
+  function collect() {
+    var f = form.elements, fr = isFr();
+    var productLabel = f.product.options[f.product.selectedIndex].text;
+    return {
+      name: f.name.value.trim(), company: f.company.value.trim(), email: f.email.value.trim(),
+      city: f.city.value.trim(), product: productLabel, volume: f.volume.value.trim(),
+      message: f.message.value.trim(), lang: fr ? 'FR' : 'EN'
+    };
+  }
+
+  function showDone() {
+    formBody.hidden = true;
+    doneBox.hidden = false;
+    doneBox.focus();
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var f = form.elements;
@@ -110,25 +132,48 @@
       if (bad && !firstBad) firstBad = el;
     });
     err.hidden = !firstBad;
+    fail.hidden = true;
     if (firstBad) { firstBad.focus(); return; }
+    if (f.botcheck.checked) { showDone(); return; } // spam bot: pretend success, send nothing
 
-    var fr = isFr();
-    var productLabel = f.product.options[f.product.selectedIndex].text;
-    var subject = (fr ? 'Demande de prix : ' : 'Quote request: ') + productLabel + ' (' + f.company.value.trim() + ')';
-    var lines = [
-      (fr ? 'Nom : ' : 'Name: ') + f.name.value.trim(),
-      (fr ? 'Entreprise : ' : 'Company: ') + f.company.value.trim(),
-      (fr ? 'Courriel : ' : 'Email: ') + f.email.value.trim(),
-      (fr ? 'Ville de livraison : ' : 'Delivery city: ') + f.city.value.trim(),
-      (fr ? 'Produit : ' : 'Product: ') + productLabel,
-      (fr ? 'Volume approximatif : ' : 'Approximate volume: ') + f.volume.value.trim(),
-      '',
-      f.message.value.trim()
-    ];
-    doneBox.hidden = false;
-    window.location.href = 'mailto:sales@deltamaple.com?subject=' + encodeURIComponent(subject) +
-      '&body=' + encodeURIComponent(lines.join('\n'));
+    var d = collect();
+    var subject = 'Quote request: ' + d.product + ' (' + d.company + ')';
+
+    if (!FORM_KEY) {
+      var lines = ['Name: ' + d.name, 'Company: ' + d.company, 'Email: ' + d.email, 'Delivery city: ' + d.city,
+        'Product: ' + d.product, 'Approximate volume: ' + d.volume, '', d.message];
+      window.location.href = 'mailto:sales@deltamaple.com?subject=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(lines.join('\n'));
+      return;
+    }
+
+    submitBtn.setAttribute('aria-busy', 'true');
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        access_key: FORM_KEY,
+        subject: subject,
+        from_name: 'Delta Maple website',
+        replyto: d.email,
+        'Name': d.name, 'Company': d.company, 'Email': d.email, 'Delivery city': d.city,
+        'Product': d.product, 'Approximate volume': d.volume, 'Details': d.message, 'Language': d.lang,
+        botcheck: false
+      })
+    }).then(function (r) { return r.json().then(function (j) { return r.ok && j.success; }); })
+      .then(function (ok) {
+        if (ok) { form.reset(); showDone(); } else { fail.hidden = false; }
+      })
+      .catch(function () { fail.hidden = false; })
+      .then(function () { submitBtn.removeAttribute('aria-busy'); });
   });
+
+  document.getElementById('form-again').addEventListener('click', function () {
+    doneBox.hidden = true;
+    formBody.hidden = false;
+    form.elements.name.focus();
+  });
+
   form.addEventListener('input', function (e) {
     if (e.target.classList.contains('invalid') && e.target.value.trim()) {
       e.target.classList.remove('invalid'); e.target.setAttribute('aria-invalid', 'false');

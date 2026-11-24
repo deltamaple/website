@@ -119,7 +119,10 @@
     'form.msg': 'Détails',
     'form.msgPh': 'Formats, calendrier, autres précisions',
     'form.send': 'Envoyer la demande',
-    'form.note': 'Votre logiciel de courriel s’ouvrira avec les détails, adressé à sales@deltamaple.com.',
+    'form.note': 'Envoyé de façon sécurisée à notre équipe commerciale. Nous utilisons vos coordonnées uniquement pour répondre à votre demande.',
+    'form.fail': 'Désolé, votre demande n\u2019a pas pu être envoyée. Réessayez, ou écrivez à <a href="mailto:sales@deltamaple.com">sales@deltamaple.com</a>.',
+    'form.doneT': 'Merci, votre demande est bien arrivée.',
+    'form.again': 'Envoyer une autre demande',
     'form.error': 'Veuillez indiquer votre nom, votre entreprise et un courriel valide.',
 
 
@@ -154,7 +157,7 @@
     'f6.a': 'Les conditions de paiement sont convenues avec chaque client et précisées dans votre devis.',
 
     'form.sub': 'Une minute suffit. Tous les champs sauf Détails nous aident à répondre plus vite.',
-    'form.done': 'Votre logiciel de courriel devrait s’ouvrir avec votre demande. Sinon, écrivez à <a href="mailto:sales@deltamaple.com">sales@deltamaple.com</a>.',
+    'form.done': 'Nous avons bien reçu votre demande de prix et répondrons à l\u2019adresse indiquée avec un prix livré.',
     'footer.ctaT': 'Envie de comparer un prix livré ?',
     'footer.where': 'Canada · Égypte',
     'route.eg': 'ÉGYPTE',

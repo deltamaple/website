@@ -455,15 +455,16 @@
         </div>
 
         <form class="quote-form reveal" id="quote-form" novalidate>
+          <div class="form-body" id="form-body">
           <h3 data-i18n="form.title">Quote request</h3>
           <p class="form-sub" data-i18n="form.sub">Takes about a minute. All fields except Details help us quote faster.</p>
           <div class="field-row">
-            <label><span data-i18n="form.name">Name</span><input name="name" autocomplete="name" required></label>
-            <label><span data-i18n="form.company">Company</span><input name="company" autocomplete="organization" required></label>
+            <label><span data-i18n="form.name">Name</span><input name="name" autocomplete="name" required maxlength="120"></label>
+            <label><span data-i18n="form.company">Company</span><input name="company" autocomplete="organization" required maxlength="160"></label>
           </div>
           <div class="field-row">
-            <label><span data-i18n="form.email">Email</span><input name="email" type="email" autocomplete="email" required></label>
-            <label><span data-i18n="form.city">Delivery city</span><input name="city" autocomplete="address-level2"></label>
+            <label><span data-i18n="form.email">Email</span><input name="email" type="email" autocomplete="email" required maxlength="200"></label>
+            <label><span data-i18n="form.city">Delivery city</span><input name="city" autocomplete="address-level2" maxlength="120"></label>
           </div>
           <div class="field-row">
             <label><span data-i18n="form.product">Product</span>
@@ -474,15 +475,21 @@
                 <option value="Other" data-i18n="form.other">Other</option>
               </select>
             </label>
-            <label><span data-i18n="form.volume">Approximate volume</span><input name="volume" placeholder="e.g. 1 pallet, 5 t, 1 container" data-i18n-ph="form.volumePh"></label>
+            <label><span data-i18n="form.volume">Approximate volume</span><input name="volume" placeholder="e.g. 1 pallet, 5 t, 1 container" data-i18n-ph="form.volumePh" maxlength="120"></label>
           </div>
-          <label><span data-i18n="form.msg">Details</span><textarea name="message" rows="4" placeholder="Formats, timing, anything else" data-i18n-ph="form.msgPh"></textarea></label>
-          <button class="btn btn-primary btn-block btn-lg" type="submit"><span data-i18n="form.send">Send request</span><svg class="arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5"/></svg></button>
-          <p class="form-note" data-i18n="form.note">This opens your email app with the details filled in, addressed to sales@deltamaple.com.</p>
+          <label><span data-i18n="form.msg">Details</span><textarea name="message" rows="4" placeholder="Formats, timing, anything else" data-i18n-ph="form.msgPh" maxlength="4000"></textarea></label>
+          <!-- Spam trap: hidden from people, bots fill it in. -->
+          <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button class="btn btn-primary btn-block btn-lg" type="submit" id="form-submit"><span data-i18n="form.send">Send request</span><svg class="arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5"/></svg></button>
+          <p class="form-note"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-i18n="form.note">Sent securely to our sales team. We only use your details to reply to your request.</span></p>
           <p class="form-error" id="form-error" role="alert" hidden data-i18n="form.error">Please add your name, company and a valid email.</p>
-          <div class="form-done" id="form-done" role="status" hidden>
+          <p class="form-error" id="form-fail" role="alert" hidden data-i18n="form.fail">Sorry, your request couldn't be sent. Please try again, or email <a href="mailto:sales@deltamaple.com">sales@deltamaple.com</a>.</p>
+          </div>
+          <div class="form-success" id="form-done" role="status" tabindex="-1" hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.5l3 3 6-6"/></svg>
-            <p data-i18n="form.done">Your email app should open now with your request. If it didn't, write to <a href="mailto:sales@deltamaple.com">sales@deltamaple.com</a>.</p>
+            <h3 data-i18n="form.doneT">Thank you, your request is in.</h3>
+            <p data-i18n="form.done">We've received your quote request and will reply to the email you gave us with a delivered price.</p>
+            <button class="btn btn-ghost" type="button" id="form-again" data-i18n="form.again">Send another request</button>
           </div>
         </form>
       </div>
@@ -524,6 +531,8 @@
     <a class="btn btn-primary btn-block" href="#contact" tabindex="-1" data-i18n="cta.quote">Request a quote</a>
   </div>
 
+  <!-- Quote form key from web3forms.com (sends to sales@deltamaple.com). -->
+  <script>window.DM_FORM_KEY = "";</script>
   <script src="js/i18n.js"></script>
   <script src="js/main.js"></script>
 </body>
